@@ -1,0 +1,16 @@
+{% extends "polls/base_generic.html" %}
+{% block content %}
+<div class="row">
+		{% if latest_poll_list %}
+    			<div class="page-header"> <h2> Latest Polls </h2></div>
+    		<ul>
+    			
+    			{% for poll in latest_poll_list %}
+        		<li><a style="color:black" href="/polls/{{ poll.id }}/"> {{ poll.question }} </a></li>
+    			{% endfor %}
+   			 </ul>
+		{% else %}
+   			 <p>No polls are available.</p>
+		{% endif %}
+ </div>
+{%endblock%}

@@ -1,0 +1,35 @@
+{% extends "polls/base_generic.html" %}
+{% block content %}
+<div class="row">
+
+		{% if poll %}
+		 <form class="" action="./login" method="post"> 
+        {%csrf_token%}
+        <div class="page-header">
+        <h2 class="">{{poll.question}}</h2>
+        </div>
+        
+		<form class="form-horizontal" role="form">
+		<div class="form-group">
+  		{% for choiche in poll.choice_set.all %}
+    	<div class="radio" >
+  			<label >
+    		<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
+			 {{ choiche.text }}
+       		</label>
+		</div>
+		 
+		{% endfor %}
+        </div>
+        
+    	<div class="form-group " style="margin-top:10px">
+      	<button type="submit" class="btn btn-default">Submit</button>
+    
+ 		</div>
+		</form>
+		</div>
+ 		{% else %}
+   			 <p>No info about this poll</p>
+		{% endif %}
+</div>
+{% endblock %}

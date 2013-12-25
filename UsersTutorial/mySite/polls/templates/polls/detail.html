@@ -2,23 +2,21 @@
 {% block content %}
 <div class="row">
 
-		{% if poll %}
-		 <form class="" action="./login" method="post"> 
-        {%csrf_token%}
-        <div class="page-header">
+	{% if poll %}
+		<div class="page-header">
         <h2 class="">{{poll.question}}</h2>
         </div>
-        
-		<form class="form-horizontal" role="form">
-		<div class="form-group">
-  		{% for choiche in poll.choice_set.all %}
-    	<div class="radio" >
+    	<form action="/polls/1/vote/" method="post">
+		{% csrf_token %}
+        <div class="form-group">
+  		{% for choice in poll.choice_set.all %}
+ 
+    		<div class="radio" >
   			<label >
-    		<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
-			 {{ choiche.text }}
+    		<input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{choice.id}}">
+			 {{ choice.text }}
        		</label>
-		</div>
-		 
+			</div> 
 		{% endfor %}
         </div>
         
@@ -28,8 +26,8 @@
  		</div>
 		</form>
 		</div>
- 		{% else %}
+ 	{% else %}
    			 <p>No info about this poll</p>
-		{% endif %}
+	{% endif %}
 </div>
 {% endblock %}

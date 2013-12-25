@@ -1,13 +1,142 @@
-{% extends "polls/base_generic.html" %}
-{% block content %}
+{% load url from future %}
+<html lang="en">
+  <head>
+   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+   <script type="text/javascript">
+     var data;
+     var chart;
+     // Load the Visualization API and the piechart package.
+     google.load('visualization', '1', {'packages':['corechart']});
+     // Set a callback to run when the Google Visualization API is loaded.
+     google.setOnLoadCallback(drawChart);
+
+     // Callback that creates and populates a data table,
+     // instantiates the pie chart, passes in the data and
+     // draws it.
+     function drawChart() {
+
+     // Create our data table.
+     data = new google.visualization.DataTable();
+     data.addColumn('string', 'Choice');
+     data.addColumn('number', 'Votes');
+     data.addRows([
+     {% for choice in poll.choice_set.all %}
+    ['{{ choice.text }}',{{ choice.votes }}]{% if not forloop.last %},{% endif %}
+{% endfor %}]);
+
+     // Set chart options
+     var options = {'title':'Poll Results',
+                       'width':400,
+                       'height':300};
+
+     // Instantiate and draw our chart, passing in some options.
+     chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+     google.visualization.events.addListener(chart, 'select', selectHandler);
+        chart.draw(data, options);
+     }
+
+      function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+        var value = data.getValue(selectedItem.row, 0);
+        alert('The user selected ' + value);
+      }
+
+    </script> 
+    
+    <meta charset="utf-8">
+    <title>Project Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      
+      .form-poll {
+        max-width:640px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+   
+      }
+      .form-poll .form-poll-heading,
+      .form-poll .radio {
+        margin-bottom: 10px;
+        
+      }
+      .form-poll input[type="text"],
+      .form-poll input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+    </style>
+    
+  	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+  	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+    </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container ">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/polls">Polls example</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          {% if user.is_authenticated%}
+           <form class="navbar-form navbar-right" action="/authentication/logout">
+          <button type="submit" class="btn btn-primary">Sign out</button>
+          </form>
+          {%else%}
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </form>
+        {%endif%}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+    
+    
+    <div class="container theme-showcase">
+
+
 <h1>{{ poll.question }}</h1>
-
+<div class="row">
+<div style="margin-top:15px" class="col-sm-4 col-md-4 col-lg-4">
 <ul>
+<h4> What people voted: </h4>
+<div style="margin-left:20px">
 {% for choice in poll.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
+    <li><b>{{ choice.text }}</b>: {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
 {% endfor %}
+</div>
 </ul>
-
+</div>
+<div class="col-sl-4 col-md-4 col-lg-4">
+ <div id="chart_div" style="width:400; height:300"></div>
+ </div>
 <a href="{% url 'polls:detail' poll.id %}">Vote again?</a>
 
-{%endblock%}
+  </div>
+  </div> <!-- /container -->
+    
+    
+</body>
+</html>

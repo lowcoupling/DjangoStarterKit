@@ -1,5 +1,7 @@
+{% load url from future %}
 <html lang="en">
   <head>
+   
     <meta charset="utf-8">
     <title>Project Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +50,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="/polls">Polls example</a>
         </div>
         <div class="navbar-collapse collapse">
           {% if user.is_authenticated%}
